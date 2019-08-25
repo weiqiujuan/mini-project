@@ -17,20 +17,20 @@
         </el-form-item>
         <el-form-item label="活动时间">
           <el-col :span="11">
-            <el-date-picker type="date" placeholder="选择开始时间" v-model="formData.activity_start" style="width: 100%;"></el-date-picker>
+            <el-date-picker type="date" placeholder="选择开始时间" v-model="formData.activity_start" value-format="timestamp" style="width: 100%;"></el-date-picker>
           </el-col>
           <el-col class="line" :span="2">-</el-col>
           <el-col :span="11">
-            <el-date-picker type="date" placeholder="选择结束时间" v-model="formData.timestamp" style="width: 100%;"></el-date-picker>
+            <el-date-picker type="date" placeholder="选择结束时间" v-model="formData.timestamp" value-format="timestamp" style="width: 100%;"></el-date-picker>
           </el-col>
         </el-form-item>
         <el-form-item label="抽奖时间">
           <el-col :span="11">
-            <el-date-picker type="date" placeholder="选择开始时间" v-model="formData.random_start" style="width: 100%;"></el-date-picker>
+            <el-date-picker type="date" placeholder="选择开始时间" v-model="formData.random_start" value-format="timestamp" style="width: 100%;"></el-date-picker>
           </el-col>
           <el-col class="line" :span="2">-</el-col>
           <el-col :span="11">
-            <el-date-picker type="date" placeholder="选择结束时间" v-model="formData.random_end" style="width: 100%;"></el-date-picker>
+            <el-date-picker type="date" placeholder="选择结束时间" v-model="formData.random_end" value-format="timestamp" style="width: 100%;"></el-date-picker>
           </el-col>
         </el-form-item>
         <el-form-item label="活动描述">

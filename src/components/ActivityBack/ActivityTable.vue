@@ -3,16 +3,23 @@
     <el-table
       :data="tableData.slice((page-1)*size,page*size)"
       border
-      style="width: 100%">
+      style="width: 100%" align="center">
       <el-table-column
         prop="name"
         label="活动名称"
         min-width="130">
       </el-table-column>
       <el-table-column
-        prop="pic"
         label="活动展示"
-        min-width="150">
+        min-width="150"
+      >
+        <template slot-scope="scope">
+          <el-image
+            style="width: 100px; height: 100px;"
+            :src="scope.row.pic" fit
+          >
+          </el-image>
+        </template>
       </el-table-column>
       <el-table-column
         prop="activity_start"
@@ -113,7 +120,7 @@
 <script>
   import ActivityModifyDialog from './ActivityModifty-dialog'
   import ActivityDetailDialog from './ActivityDetail-dialog'
-  import {getActivitys, getUserInfoDetail} from '../../util/api'
+  import {getActivitys, getActivityDetail} from '../../util/api'
 
   export default {
     name: "ActivityTable",
@@ -123,9 +130,10 @@
     data() {
       return {
         tableData: [{
+          id: 1,
           name: '三元购',
           desc: '活动描述活动描述活动描述活动描述活动描述活动描述活动描述活动描述活动描述',
-          pic: '', //url
+          pic: 'http://seopic.699pic.com/photo/50050/2419.jpg_wh1200.jpg', //url
           price: 22555.5,
           onsale: 0,
           activity_start: 'timestamp',
@@ -134,6 +142,8 @@
           random_end: 'timestamp', // 开奖结束时间
           person: 100, // 开团需要人数
           status: 4, // 0活动未开始，1活动进行中，2开奖中，3开奖成功，4不满足条件结束
+          participate: 15,
+          joinPerson: 80
         }, {
           name: '三元购',
           desc: '活动描述',
@@ -158,6 +168,8 @@
           random_end: 'timestamp', // 开奖结束时间
           person: 100, // 开团需要人数
           status: 0, // 0活动未开始，1活动进行中，2开奖中，3开奖成功，4不满足条件结束
+          participate: 15,
+          joinPerson: 1000
         }],
         formData: {},
         formDetailData: {},
@@ -174,7 +186,7 @@
     },
     methods: {
       getData() {
-        getActivitys(this.page,this.size)
+        getActivitys(this.page, this.size)
       },
       handleSizeChange(val) {
         console.log(`每页${val}条`);
@@ -187,7 +199,8 @@
       },
       handleModify(row) {
         this.dialogFormVisible = true;
-        getUserInfoDetail(row.id)
+        //this.joinPerson=getActivityDetail(row.id);
+        this.participate=row.person-this.joinPerson
         this.formData = row;
         console.log(row)
       },
@@ -197,6 +210,8 @@
       },
       handleDetail(row) {
         this.dialogDetailVisible = true;
+        //row.joinPerson=getActivityDetail(row.id);
+        row.participate=row.person-row.joinPerson
         this.formDetailData = row
         console.log(this.formDetailData.name)
       },

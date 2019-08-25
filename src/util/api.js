@@ -2,13 +2,13 @@ import axios from 'axios';// 引入axios
 var $axios = axios.create({timeout: 1000 * 12});
 
 let apiUrl = 'http://119.29.28.43'
-let apiU = 'http://localhost:8081'
+let apiU = 'http://localhost:8080'
 
 
 export function createActivity(params) {
   $axios
     .post(apiU + '/activity', params)
-    .then(response => console.log(response.msg))
+    .then(response => console.log(response))
 }
 
 export function getActivitys(page, size) {
@@ -23,7 +23,7 @@ export function getActivitys(page, size) {
     )
 }
 
-export function getDetail(id) {
+export function getActivityDetail(id) {
   $axios
     .get(apiUrl + '/activitys?id=' + id)
     .then(response =>
