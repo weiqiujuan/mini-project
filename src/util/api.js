@@ -121,7 +121,7 @@ export const getUserInfoDetail = (id) => {
       activity_id: 222 ,// 活动id
       activity_name: 11,// 活动名
       money: 14.5, // 金额
-      time:'2019-12-15'// 流水创建时间
+      time:1564675200000// 流水创建时间
     }]
   }
   return resdata

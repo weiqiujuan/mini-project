@@ -51,13 +51,15 @@
       <el-table-column
         prop="time"
         label="流水创建时间"
-        min-width="130">
+        min-width="130"
+        :formatter="dateFormat">
       </el-table-column>
     </el-table>
   </el-dialog>
 </template>
 
 <script>
+  import moment from 'moment'
   export default {
     name: "UserInfoDetail-dialog",
     props: {
@@ -76,6 +78,13 @@
     methods: {
       handleClose() {
         this.$emit('dialog-cancel', false);
+      },
+      dateFormat(row, column) {
+        var date = row[column.property];
+        if (date === undefined) {
+          return "";
+        }
+        return moment(date).format("YYYY-MM-DD HH:mm:ss");
       },
     }
   }

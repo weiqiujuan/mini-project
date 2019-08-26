@@ -7,7 +7,7 @@
       <el-table-column
         prop="name"
         label="活动名称"
-        min-width="130">
+        min-width="120">
       </el-table-column>
       <el-table-column
         label="活动展示"
@@ -24,27 +24,31 @@
       <el-table-column
         prop="activity_start"
         label="活动开始时间"
-        min-width="150">
+        min-width="120"
+        :formatter="dateFormat">
       </el-table-column>
       <el-table-column
         prop="activity_end"
         label="活动结束时间"
-        min-width="120">
+        min-width="120"
+        :formatter="dateFormat">
       </el-table-column>
       <el-table-column
         prop="random_start"
         label="开奖时间"
-        min-width="120">
+        min-width="120"
+        :formatter="dateFormat">
       </el-table-column>
       <el-table-column
         prop="random_end"
         label="开奖结束时间"
-        min-width="120">
+        min-width="120"
+        :formatter="dateFormat">
       </el-table-column>
       <el-table-column
         prop="person"
         label="开团需要人数"
-        min-width="120">
+        min-width="100">
       </el-table-column>
       <el-table-column
         prop="desc"
@@ -123,6 +127,7 @@
   import ActivityModifyDialog from './ActivityModifty-dialog'
   import ActivityDetailDialog from './ActivityDetail-dialog'
   import {getActivitys, getActivityDetail, onSale} from '../../util/api'
+  import moment from 'moment'
 
   export default {
     name: "ActivityTable",
@@ -138,10 +143,10 @@
           pic: 'http://seopic.699pic.com/photo/50050/2419.jpg_wh1200.jpg', //url
           price: 22555.5,
           onsale: 0,
-          activity_start: 'timestamp',
-          activity_end: 'timestamp',
-          random_start: 'timestamp', // 开奖开始时间
-          random_end: 'timestamp', // 开奖结束时间
+          activity_start: 1565193600000,
+          activity_end: 1564675200000,
+          random_start: 1564675200000, // 开奖开始时间
+          random_end: 1564675200000, // 开奖结束时间
           person: 100, // 开团需要人数
           status: 4, // 0活动未开始，1活动进行中，2开奖中，3开奖成功，4不满足条件结束
           participate: 15,
@@ -227,6 +232,13 @@
             message: '此活动已上线',
           })
         }
+      },
+      dateFormat(row, column) {
+        var date = row[column.property];
+        if (date === undefined) {
+          return "";
+        }
+        return moment(date).format("YYYY-MM-DD");
       },
       handleDetail(row) {
         this.dialogDetailVisible = true;

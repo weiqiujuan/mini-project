@@ -23,7 +23,7 @@
           </el-col>
           <el-col class="line" :span="2">-</el-col>
           <el-col :span="11">
-            <el-date-picker type="date" placeholder="选择结束时间" v-model="form.timestamp" value-format="timestamp"
+            <el-date-picker type="date" placeholder="选择结束时间" v-model="form.activity_end" value-format="timestamp"
                             style="width: 100%;"></el-date-picker>
           </el-col>
         </el-form-item>
