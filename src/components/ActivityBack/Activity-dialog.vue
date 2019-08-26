@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="activeDialog">
     <el-button type="" @click="dialogVisible = true" size="larger">活动新增</el-button>
     <el-dialog
       title="新增活动"
@@ -63,7 +63,6 @@
   </span>
     </el-dialog>
   </div>
-
 </template>
 
 <script>
@@ -99,7 +98,20 @@
       onSubmit() {
         let params = this.form
         console.log(this.form);
-        createActivity(params)
+        let result = createActivity(params)
+
+        if (result.code === 200) {
+          this.$notify({
+            title: '提示',
+            message: '新增项目成功',
+            type: 'success'
+          })
+        } else {
+          this.$notify.error({
+            title: '提示',
+            message: '修改' + result.data.msg,
+          })
+        }
         this.dialogVisible = false;
         //清空表单
       },
@@ -114,5 +126,7 @@
 </script>
 
 <style scoped>
-
+  .activeDialog {
+    margin-bottom: 10px;
+  }
 </style>

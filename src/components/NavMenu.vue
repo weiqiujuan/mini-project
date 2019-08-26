@@ -12,7 +12,7 @@
       <p>活动内容运营平台</p>
       <el-menu-item index="1">
         <i class="el-icon-location"></i>
-        <span><router-link to="/">活动列表</router-link></span>
+        <span><router-link to="ActivityBack">活动列表</router-link></span>
       </el-menu-item>
       <el-menu-item index="2">
         <i class="el-icon-menu"></i>

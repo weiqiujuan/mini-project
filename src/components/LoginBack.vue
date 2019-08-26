@@ -1,34 +1,145 @@
 <template>
-  <div class="login">
-    <el-form>
-      <el-form-item>
-        <el-input v-model="userinfo.username" placeholder="用户名：admin"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-input v-model="userinfo.password" placeholder="密码：11111"></el-input>
-      </el-form-item>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button style="width:80%" type="primary" @click="doLogin()">确 定</el-button>
+  <div id="bg" class="bg">
+    <div class="login" @keyup.13="doLogin">
+      <div class="form-horizontal login">
+        <div class="logo">登录</div>
+        <div class="form-group input-group input-group-lg ">
+          <span class="input-group-addon"><i class="fa fa-user-o" aria-hidden="true"></i></span>
+          <el-input type="text" class=" form-control" placeholder="username" v-model="userInfo.username"/>
+        </div>
+        <div class="form-group input-group input-group-lg">
+          <span class="input-group-addon"><i class="fa fa-key" aria-hidden="true"></i></span>
+          <el-input type="password" class=" form-control" placeholder="password" v-model="userInfo.password"/>
+        </div>
+        <div class="form-group">
+          <el-button type="text" style="float: left;">忘记密码？</el-button>
+          <div class="oper">
+            <el-button class="form-control" @click="doLogin" type="primary">登 录</el-button>
+            <el-button class="form-control" @click="doSign">注册</el-button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+  import {login} from "../util/api";
+
   export default {
-    name: "LoginBack",
+    name: 'login',
     data() {
-      userinfo:{
+      return {
+        userInfo: {
+          username: '',
+          password: '',
+        },
+        show: false,
       }
     },
     methods: {
       doLogin() {
-        console.log('登录操作')
+        if (this.userInfo.username === '') {
+          alert('用户名不能为空');
+          return false
+        }
+        if (this.userInfo.password === '') {
+          alert('密码名不能为空');
+          return false
+        }
+
+        let res = login(this.userInfo)
+        if (res) {
+          this.$notify({
+            title: '提示信息',
+            message: '登录成功',
+            type: 'success',
+          });
+          this.$router.push({path: '/ActivityBack'})
+        } else {
+          this.$notify({
+            title: '提示信息',
+            message: '账号或密码错误',
+            type: 'error'
+          });
+        }
+        /*axios.post('/login', JSON.stringify(this.userInfo))
+          .then(res => {
+            console.log(res)
+            if (res.status == 200) {
+              this.$store.commit('setToken', res.data);
+              localStorage.userName = this.userInfo.userName;
+              localStorage.token_expire = res.data.expire;
+              localStorage.token = res.data.token;
+              this.$notify({
+                title: '提示信息',
+                message: '登录成功',
+                type: 'success'
+              });
+              this.$router.push({path: '/'})
+            } else {
+              this.$notify({
+                title: '提示信息',
+                message: '账号或密码错误',
+                type: 'error'
+              });
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })*/
+      },
+      doSign() {
+        alert('找相关人员开启权限')
       }
-    }
+    },
+    mounted() {
+      var wi = window.screen.width;
+      var hi = window.screen.height;
+      document.getElementById("bg").style.width = wi + "px";
+      document.getElementById("bg").style.height = hi + "px";
+    },
   }
 </script>
 
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .bg {
+    /*!*background-color: aqua;*!*/
+    /* background-image: url("../assets/bj.jpg");
+     background-size: 100% 100%*/
+  }
 
+  .login {
+    text-align: center;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width: 400px;
+  }
+
+  .login-btn {
+    background-color: whitesmoke;
+  }
+
+  .oper {
+    float: right;
+  }
+
+  .form-group {
+    margin-bottom: 25px;
+  }
+
+  .logo {
+    font-family: "DejaVu Sans Mono";
+    color: lightblue;
+    font-size: 38px;
+    letter-spacing: 4px;
+    margin: 30px;
+  }
 </style>

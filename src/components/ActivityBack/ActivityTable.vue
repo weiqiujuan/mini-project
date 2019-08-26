@@ -3,7 +3,7 @@
     <el-table
       :data="tableData.slice((page-1)*size,page*size)"
       border
-      style="width: 100%" align="center">
+      style="width: 100%">
       <el-table-column
         prop="name"
         label="活动名称"
@@ -103,11 +103,13 @@
       </el-table-column>
 
     </el-table>
-    <el-pagination align='right'
-                   @size-change="handleSizeChange"
-                   @current-change="handleCurrentChange" :current-page="page" :page-sizes="[1,5,10]"
-                   :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total_page">
-    </el-pagination>
+    <div class="pagination">
+      <el-pagination align='right'
+                     @size-change="handleSizeChange"
+                     @current-change="handleCurrentChange" :current-page="page" :page-sizes="[1,5,10]"
+                     :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total_page">
+      </el-pagination>
+    </div>
     <ActivityModifyDialog :dialogFormVisible="dialogFormVisible"
                           :formData="formData"
                           @dialog-cancel="close"/>
@@ -120,7 +122,7 @@
 <script>
   import ActivityModifyDialog from './ActivityModifty-dialog'
   import ActivityDetailDialog from './ActivityDetail-dialog'
-  import {getActivitys, getActivityDetail} from '../../util/api'
+  import {getActivitys, getActivityDetail, onSale} from '../../util/api'
 
   export default {
     name: "ActivityTable",
@@ -186,7 +188,11 @@
     },
     methods: {
       getData() {
-        getActivitys(this.page, this.size)
+        let res = getActivitys(this.page, this.size)
+        this.tableData = res.activities
+        this.page = res.page
+        this.size = res.size
+        this.total_page = res.total_page
       },
       handleSizeChange(val) {
         console.log(`每页${val}条`);
@@ -199,21 +205,34 @@
       },
       handleModify(row) {
         this.dialogFormVisible = true;
-        //this.joinPerson=getActivityDetail(row.id);
-        this.participate=row.person-this.joinPerson
         this.formData = row;
         console.log(row)
       },
       handleChange(row) {
-        row.onsale = 1;
-        console.log('row.id')
+        let params = {
+          id: row.id,
+          action: row.onsale
+        };
+        let res = onSale(params)
+        if (res.code === 200 && res.data.status === 'success') {
+          row.onsale = 1;
+          this.$notify({
+            title: '提示',
+            message: '上线成功',
+            type: 'success'
+          })
+        } else {
+          this.$notify.error({
+            title: '提示',
+            message: '此活动已上线',
+          })
+        }
       },
       handleDetail(row) {
         this.dialogDetailVisible = true;
-        //row.joinPerson=getActivityDetail(row.id);
-        row.participate=row.person-row.joinPerson
+        row.joinPerson = getActivityDetail(row.id);
+        row.participate = row.person - row.joinPerson
         this.formDetailData = row
-        console.log(this.formDetailData.name)
       },
       detailClose() {
         this.dialogDetailVisible = false;
@@ -226,5 +245,7 @@
 </script>
 
 <style scoped>
-
+  .pagination {
+    margin-top: 20px;
+  }
 </style>

@@ -4,6 +4,7 @@ import ActivityBack from '@/components/ActivityBack/index'
 import UserInfoBack from '@/components/UserInfoBack/index'
 import AboutMe from '@/components/AboutMe'
 import LoginBack from "@/components/LoginBack";
+import PlatForm from '@/components/PlatForm'
 
 Vue.use(Router)
 
@@ -11,17 +12,26 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'ActivityBack',
-      component: ActivityBack
+      name: 'LoginBack',
+      component: LoginBack
     },
     {
-      path: '/UserInfoBack',
-      name: 'UserInfoBack',
-      component: UserInfoBack
-    }, {
-      path: '/AboutMe',
-      name: 'AboutMe',
-      component: AboutMe
-    }
+      path: '/PlatForm',
+      component: PlatForm,
+      children: [{
+        path: '/ActivityBack',
+        name: 'ActivityBack',
+        component: ActivityBack
+      },
+        {
+          path: '/UserInfoBack',
+          name: 'UserInfoBack',
+          component: UserInfoBack
+        }, {
+          path: '/AboutMe',
+          name: 'AboutMe',
+          component: AboutMe
+        }]
+    },
   ]
 })

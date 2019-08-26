@@ -1,41 +1,21 @@
 <template>
   <div class="header">
-    <el-breadcrumb separator="/" class="breadcrumb">
-      <el-breadcrumb-item>
-        <a @click="loginBack" v-model="login">{{login}}</a>
-      </el-breadcrumb-item>
-      <el-breadcrumb-item>
-        <a @click="logout">注销</a>
-      </el-breadcrumb-item>
-    </el-breadcrumb>
+    <div class="userImg">
+      <router-link to="/">
+        <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+      </router-link>
+    </div>
   </div>
 </template>
 
 <script>
-  import {eventBus} from '../eventBus'
-
   export default {
     name: "HeaderBack",
     data() {
       return {
-        login: '登录',
       }
     },
-    created() {
-      eventBus.$on('username', (params) => {
-        this.login = params
-      })
-    },
     methods: {
-      loginBack(){
-        console.log('登录操作')
-      },
-      logout() {
-        console.log('退出操作')
-      },
-    },
-    beforeDestroy() {
-      eventBus.$off('username')
     }
   }
 </script>
@@ -47,10 +27,9 @@
     height: 120%;
     position: relative;
   }
-  .breadcrumb {
-    padding: 10px;
-    position: absolute;
-    right: 10px;
-    line-height: 100%;
+  .userImg{
+    float: right;
+    margin: 20px;
   }
+
 </style>

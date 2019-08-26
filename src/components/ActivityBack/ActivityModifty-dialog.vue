@@ -5,7 +5,7 @@
       :visible.sync="dialogFormVisible"
       width="50%"
       :before-close="handleClose">
-      <el-form ref="form"  :model="formData" label-width="80px">
+      <el-form ref="form" :model="formData" label-width="80px">
         <el-form-item label="活动名称">
           <el-input v-model="formData.name"></el-input>
         </el-form-item>
@@ -17,20 +17,24 @@
         </el-form-item>
         <el-form-item label="活动时间">
           <el-col :span="11">
-            <el-date-picker type="date" placeholder="选择开始时间" v-model="formData.activity_start" value-format="timestamp" style="width: 100%;"></el-date-picker>
+            <el-date-picker type="date" placeholder="选择开始时间" v-model="formData.activity_start" value-format="timestamp"
+                            style="width: 100%;"></el-date-picker>
           </el-col>
           <el-col class="line" :span="2">-</el-col>
           <el-col :span="11">
-            <el-date-picker type="date" placeholder="选择结束时间" v-model="formData.timestamp" value-format="timestamp" style="width: 100%;"></el-date-picker>
+            <el-date-picker type="date" placeholder="选择结束时间" v-model="formData.timestamp" value-format="timestamp"
+                            style="width: 100%;"></el-date-picker>
           </el-col>
         </el-form-item>
         <el-form-item label="抽奖时间">
           <el-col :span="11">
-            <el-date-picker type="date" placeholder="选择开始时间" v-model="formData.random_start" value-format="timestamp" style="width: 100%;"></el-date-picker>
+            <el-date-picker type="date" placeholder="选择开始时间" v-model="formData.random_start" value-format="timestamp"
+                            style="width: 100%;"></el-date-picker>
           </el-col>
           <el-col class="line" :span="2">-</el-col>
           <el-col :span="11">
-            <el-date-picker type="date" placeholder="选择结束时间" v-model="formData.random_end" value-format="timestamp" style="width: 100%;"></el-date-picker>
+            <el-date-picker type="date" placeholder="选择结束时间" v-model="formData.random_end" value-format="timestamp"
+                            style="width: 100%;"></el-date-picker>
           </el-col>
         </el-form-item>
         <el-form-item label="活动描述">
@@ -62,37 +66,49 @@
 </template>
 
 <script>
-  import {createActivity} from '../../util/api'
+  import {activityModify} from '../../util/api'
 
   export default {
     name: "Activity-dialog",
-    props:{
-      formData:{
-        type:Object,
-        require:true
+    props: {
+      formData: {
+        type: Object,
+        require: true
       },
-      dialogFormVisible:{
-        type:Boolean,
+      dialogFormVisible: {
+        type: Boolean,
         require: true
       }
     },
     data() {
-      return {
-      }
+      return {}
     },
     methods: {
       handleClose() {
-        this.$emit('dialog-cancel',false);
+        this.$emit('dialog-cancel', false);
       },
       onSubmit() {
-        let params=this.formData
-        createActivity(params)
+        let params = this.formData
+        let result = activityModify(params)
+
+        if (result.code === 200) {
+          this.$notify({
+            title: '提示',
+            message: '修改成功',
+            type: 'success'
+          })
+        } else {
+          this.$notify.error({
+            title: '提示',
+            message: '新增' + result.data.msg,
+          })
+        }
         this.$emit('dialog-cancel', true);
       },
-      handleChange(file, fileList){
+      handleChange(file, fileList) {
         this.formData.pic = URL.createObjectURL(file.raw);
       },
-      beforeUpload(file){
+      beforeUpload(file) {
         return true
       }
     }

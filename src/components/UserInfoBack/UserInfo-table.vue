@@ -3,7 +3,7 @@
     <span>用户名查找</span>
     <el-input
       placeholder="请输入用户名查找"
-      v-model="search" class="search">
+      v-model="username" class="search">
       <i slot="prefix" class="el-input__icon el-icon-search"></i>
     </el-input>
     <el-button icon="el-icon-search" circle @click="searchInfo"></el-button>
@@ -52,6 +52,7 @@
                    :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total_page">
     </el-pagination>
     <UserInfoDetailDialog :dialogFormVisible="dialogFormVisible"
+                          :userInfoData="userInfoData"
                           @dialog-cancel="close"/>
   </div>
 
@@ -59,38 +60,49 @@
 
 <script>
   import UserInfoDetailDialog from "./UserInfoDetail-dialog";
-  import {getUserInfo,getUserInfoDetail} from "../../util/api";
+  import {getUserInfo, getUserInfoDetail, getUserSearch} from "../../util/api";
 
   export default {
     name: "UserInfo-table",
     components: {UserInfoDetailDialog},
-    created(){
-      getUserInfo(this.page,this.size)
+    created() {
+      this.getUserInfoData()
     },
     data() {
       return {
-        tableData: [{
-          name: '王小虎',
-          age: 16,
-          sex: '女',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }],
+        tableData: [],
         page: 1,
         size: 3,
         total_page: 100,
-        search: '',
+        username: '',
         dialogFormVisible: false,
-        userInfo:{
-          id:1
-        }
+        userInfoData: []
       }
     },
     methods: {
+      getUserInfoData() {
+        let res = getUserInfo(this.page, this.size)
+        if (res.code === 200 && res.data.users !== []) {
+          this.tableData = res.data.users
+          this.page = res.data.page
+          this.size = res.data.size
+          this.total_page = res.data.total_page
+        } else {
+          alert(res.data.msg)
+        }
+      },
       handleClick(row) {
-        getUserInfoDetail(row.id)
+        let res = getUserInfoDetail(1)
+        // let res=getUserInfoDetail(row.id)
+        if (res.code === 200) {
+          if (res.data !== []) {
+            this.userInfoData = res.bills
+          } else {
+            alert('暂无用户流水信息 ')
+          }
+        } else {
+          alert(res.msg)
+        }
         this.dialogFormVisible = true
       },
       handleSizeChange(val) {
@@ -103,6 +115,17 @@
         this.page = val;
       },
       searchInfo() {
+        if (this.username) {
+          let res = getUserSearch(this.username)
+          if (res.code === 200 && res.data.users !== []) {
+            this.tableData = res.data.users
+          } else {
+            alert(res.data.msg)
+          }
+        } else {
+          alert('请输入要查询的用户名')
+        }
+
         console.log('查询用户信息')
       },
       close() {
@@ -119,6 +142,7 @@
   }
 
   .table {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
+
 </style>
