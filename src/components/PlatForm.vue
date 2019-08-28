@@ -27,7 +27,6 @@
       NavMenu, HeaderBack
     },
     mounted(){
-      consle.log()
     }
   }
 </script>

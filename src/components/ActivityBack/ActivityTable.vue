@@ -7,16 +7,33 @@
       <el-table-column
         prop="name"
         label="活动名称"
+        min-width="100">
+      </el-table-column>
+      <el-table-column
+        prop="introduce"
+        label="活动介绍"
         min-width="120">
       </el-table-column>
       <el-table-column
         label="活动展示"
-        min-width="150"
+        min-width="140"
       >
         <template slot-scope="scope">
           <el-image
             style="width: 100px; height: 100px;"
             :src="scope.row.pic" fit
+          >
+          </el-image>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="活动奖品展示"
+        min-width="140"
+      >
+        <template slot-scope="scope">
+          <el-image
+            style="width: 100px; height: 100px;"
+            :src="scope.row.pic_small" fit
           >
           </el-image>
         </template>
@@ -48,7 +65,7 @@
       <el-table-column
         prop="person"
         label="开团需要人数"
-        min-width="100">
+        min-width="110">
       </el-table-column>
       <el-table-column
         prop="desc"
@@ -65,7 +82,7 @@
       <el-table-column
         prop="status"
         label="活动状态"
-        min-width="150">
+        min-width="160">
         <template slot-scope="scope">
           <el-button
             @click="handleModify(scope.row)"
@@ -101,7 +118,8 @@
           </el-button>
           <el-button
             type="success"
-            v-if="scope.row.onsale!==0" disabled="">已上线
+            @click="handleChange(scope.row)"
+            v-if="scope.row.onsale!==0">已上线
           </el-button>
         </template>
       </el-table-column>
@@ -126,8 +144,9 @@
 <script>
   import ActivityModifyDialog from './ActivityModifty-dialog'
   import ActivityDetailDialog from './ActivityDetail-dialog'
-  import {getActivitys, getActivityDetail, onSale} from '../../util/api'
-  import moment from 'moment'
+  import moment from 'moment'//事件处理模块
+  import Qs from 'qs'
+  import {apiUrl, $axios} from '../../util/api'
 
   export default {
     name: "ActivityTable",
@@ -136,54 +155,14 @@
     },
     data() {
       return {
-        tableData: [{
-          id: 1,
-          name: '三元购',
-          desc: '活动描述活动描述活动描述活动描述活动描述活动描述活动描述活动描述活动描述',
-          pic: 'http://seopic.699pic.com/photo/50050/2419.jpg_wh1200.jpg', //url
-          price: 22555.5,
-          onsale: 0,
-          activity_start: 1565193600000,
-          activity_end: 1564675200000,
-          random_start: 1564675200000, // 开奖开始时间
-          random_end: 1564675200000, // 开奖结束时间
-          person: 100, // 开团需要人数
-          status: 4, // 0活动未开始，1活动进行中，2开奖中，3开奖成功，4不满足条件结束
-          participate: 15,
-          joinPerson: 80
-        }, {
-          name: '三元购',
-          desc: '活动描述',
-          pic: '', //url
-          price: 22555.5,
-          onsale: 1,
-          activity_start: 'timestamp',
-          activity_end: 'timestamp',
-          random_start: 'timestamp', // 开奖开始时间
-          random_end: 'timestamp', // 开奖结束时间
-          person: 100, // 开团需要人数
-          status: 1, // 0活动未开始，1活动进行中，2开奖中，3开奖成功，4不满足条件结束
-        }, {
-          name: '三元购',
-          desc: '活动描述',
-          pic: '', //url
-          price: 22555.5,
-          onsale: 0,
-          activity_start: 'timestamp',
-          activity_end: 'timestamp',
-          random_start: 'timestamp', // 开奖开始时间
-          random_end: 'timestamp', // 开奖结束时间
-          person: 100, // 开团需要人数
-          status: 0, // 0活动未开始，1活动进行中，2开奖中，3开奖成功，4不满足条件结束
-          participate: 15,
-          joinPerson: 1000
-        }],
+        tableData: [],
         formData: {},
         formDetailData: {},
         dialogFormVisible: false,
         dialogDetailVisible: false,
         page: 1,
-        size: 3,
+        size: 5,
+        handleSize: 100,
         total_page: 100
       }
     },
@@ -192,13 +171,87 @@
       ActivityDetailDialog
     },
     methods: {
+      //列表展示数据
       getData() {
-        let res = getActivitys(this.page, this.size)
-        this.tableData = res.activities
-        this.page = res.page
-        this.size = res.size
-        this.total_page = res.total_page
+        $axios
+          .get(apiUrl + '/activities?page=' + this.page + '&size=' + this.handleSize)
+          .then(response => {
+              let res = response.data
+              this.tableData = res.data.activities
+              this.page = res.data.page
+              this.size = res.data.size
+              this.total_page = res.data.activities.length
+            }
+          )
       },
+      //向修改子组件传值
+      handleModify(row) {
+        this.dialogFormVisible = true;
+        this.formData = row;
+      },
+      //上下线操作
+      handleChange(row) {
+        let changeRes = row.onsale;
+        let params = {
+          id: row.id,
+          action: changeRes
+        };
+        $axios({
+          url: apiUrl + '/activity/onsale',
+          method: 'post',
+          transformRequest: [function (data) {
+            return Qs.stringify(data)
+          }],
+          data: params
+        }).then(response => {
+            let res = response.data
+            if (res.code === '200' && res.data.msg === 'success') {
+              if (changeRes === 0) {
+                row.onsale = 1;
+                this.$notify({
+                  title: '提示',
+                  message: '上线成功',
+                  type: 'success'
+                })
+              } else {
+                row.onsale = 0;
+                this.$notify({
+                  title: '提示',
+                  message: '下线成功',
+                  type: 'success'
+                })
+              }
+            } else {
+              this.$notify.error({
+                title: '提示',
+                message: res.data.msg,
+              })
+            }
+          }
+        )
+      },
+      //时间戳处理
+      dateFormat(row, column) {
+        var date = row[column.property];
+        if (date === undefined) {
+          return "";
+        }
+        return moment(date).format("YYYY-MM-DD");
+      },
+      //活动详情
+      handleDetail(row) {
+        this.dialogDetailVisible = true;
+        $axios
+          .get(apiUrl + '/activity/detail?id=' + row.id)
+          .then(response => {
+              let res = response.data
+              this.formDetailData = res.data
+              console.log(this.formDetailData)
+            }
+          )
+      },
+
+      //分页处理
       handleSizeChange(val) {
         console.log(`每页${val}条`);
         this.page = 1;
@@ -208,44 +261,8 @@
         console.log(`当前页：${val}`);
         this.page = val;
       },
-      handleModify(row) {
-        this.dialogFormVisible = true;
-        this.formData = row;
-        console.log(row)
-      },
-      handleChange(row) {
-        let params = {
-          id: row.id,
-          action: row.onsale
-        };
-        let res = onSale(params)
-        if (res.code === 200 && res.data.status === 'success') {
-          row.onsale = 1;
-          this.$notify({
-            title: '提示',
-            message: '上线成功',
-            type: 'success'
-          })
-        } else {
-          this.$notify.error({
-            title: '提示',
-            message: '此活动已上线',
-          })
-        }
-      },
-      dateFormat(row, column) {
-        var date = row[column.property];
-        if (date === undefined) {
-          return "";
-        }
-        return moment(date).format("YYYY-MM-DD");
-      },
-      handleDetail(row) {
-        this.dialogDetailVisible = true;
-        row.joinPerson = getActivityDetail(row.id);
-        row.participate = row.person - row.joinPerson
-        this.formDetailData = row
-      },
+
+      //弹窗关闭
       detailClose() {
         this.dialogDetailVisible = false;
       },
