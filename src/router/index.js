@@ -8,10 +8,14 @@ import PlatForm from '@/components/PlatForm'
 
 Vue.use(Router)
 
-export default new Router({
+let router = new Router({
   routes: [
     {
       path: '/',
+      redirect: '/LoginBack'
+    },
+    {
+      path: '/LoginBack',
       name: 'LoginBack',
       component: LoginBack
     },
@@ -35,3 +39,19 @@ export default new Router({
     },
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/LoginBack') {
+    next();
+  } else {
+    let token = localStorage.getItem('Authorization');
+
+    if (token === 'null' || token === '') {
+      next('/LoginBack');
+    } else {
+      next();
+    }
+  }
+});
+
+export default router

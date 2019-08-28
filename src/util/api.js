@@ -82,12 +82,13 @@ export const getUserSearch = (username) => {
 }
 
 export const login = (params) => {
-  $axios
+  return params
+  /*$axios
     .post(apiUrl + '/login', params)
     .then(response => {
         return response
       }
-    )
+    )*/
 }
 
 

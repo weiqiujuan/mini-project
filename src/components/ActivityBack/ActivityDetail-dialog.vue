@@ -5,18 +5,59 @@
       :visible.sync="dialogDetailVisible"
       width="50%"
       :before-close="handleClose">
+      <p class='statusActivity' >活动未开始</p>
+      <p v-if="formDetailData.status===1">活动进行中</p>
+      <p v-if="formDetailData.status===2">活动开奖中</p>
+      <p v-if="formDetailData.status===3">活动开奖成功</p>
+      <p v-if="formDetailData.status===-1">活动开奖失败</p>
       <el-row :gutter="20">
-        <el-col :span='12'><img src="../../assets/mini.png" alt="图片" style="width:100%;height: 100%"></el-col>
-        <el-col :span="12">
-          <div class="name">{{formDetailData.name}}</div>
-          <div class="desc">{{formDetailData.desc}}</div>
-          <div class="count">目前参与人数达{{formDetailData.joinPerson}}人</div>
-          <div v-if="formDetailData.onsale === 0 && formDetailData.status === 4" class="imp">
-            因人数不足活动结束，活动参与还需{{formDetailData.participate}}人
-          </div>
-          <div v-if="formDetailData.onsale === 1 && formDetailData.status === 1" class="imp">
-            还需{{formDetailData.participate}}人成团
-          </div>
+        <el-col :span='12' v-if="formDetailData.status!==0">
+          <p class="tableInfo">参与用户列表:</p>
+          <el-table
+            :data="formDetailData.users" border
+            style="width: 100%"
+            max-height="300">
+            <el-table-column
+              prop="id"
+              label="用户id"
+              min-width="100">
+            </el-table-column>
+            <el-table-column
+              prop="name"
+              label="用户姓名"
+              min-width="100">
+            </el-table-column>
+            <el-table-column
+              prop="time"
+              label="参与时间">
+            </el-table-column>
+          </el-table>
+        </el-col>
+        <el-col :span="12" v-if="formDetailData.status>=1||formDetailData.status!==-1">
+          <p class="tableInfo">中奖用户列表:</p>
+          <el-table
+            :data="formDetailData.winners" border
+            style="width: 100%">
+            <el-table-column
+              prop="id"
+              label="用户id"
+              min-width="100">
+            </el-table-column>
+            <el-table-column
+              prop="name"
+              label="用户姓名"
+              min-width="100">
+            </el-table-column>
+            <el-table-column
+              prop="time"
+              label="参与时间"
+              min-width="100">
+            </el-table-column>
+            <el-table-column
+              prop="getPrice"
+              label="奖品领取">
+            </el-table-column>
+          </el-table>
         </el-col>
       </el-row>
     </el-dialog>
@@ -50,35 +91,20 @@
 </script>
 
 <style scoped>
-  .name, .count, .imp, .desc {
+  .statusActivity, .tableInfo {
     margin-bottom: 10px;
     font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   }
 
-  .name {
-    margin-top: 10px;
-    color: #909399;
-    /*font-size: 24px;*/
+  .tableInfo {
+    color: #545c64;
     font-size: 1.5em;
-
+    text-align: left;
   }
 
-  .desc {
-    color: #909399;
-    /*font-size: 20px;*/
-    font-size: 1.25em;
+  .statusActivity {
+    color: #ff693b;
+    font-size: 2.5em;
+    text-align: center;
   }
-
-  .count {
-    color: #E6A23C;
-    /*font-size: 24px;*/
-    font-size: 1.5em;
-  }
-
-  .imp {
-    color: #F56C6C;
-    /*font-size: 36px;*/
-    font-size: 2.25em;
-  }
-
 </style>

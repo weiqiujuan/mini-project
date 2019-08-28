@@ -174,7 +174,7 @@
       //列表展示数据
       getData() {
         $axios
-          .get(apiUrl + '/activities?page=' + this.page + '&size=' + this.handleSize)
+          .get(apiUrl + '/activities?page=' + this.page + '&size=' + this.size)
           .then(response => {
               let res = response.data
               this.tableData = res.data.activities
@@ -242,11 +242,13 @@
       handleDetail(row) {
         this.dialogDetailVisible = true;
         $axios
-          .get(apiUrl + '/activity/detail?id=' + row.id)
+          .get(apiUrl + '/activity/detail', row.id)
           .then(response => {
-              let res = response.data
-              this.formDetailData = res.data
-              console.log(this.formDetailData)
+              if (response === '200') {
+                let res = response.data
+                this.formDetailData = res.data
+                console.log(this.formDetailData)
+              }
             }
           )
       },

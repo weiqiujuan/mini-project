@@ -24,7 +24,8 @@
 </template>
 
 <script>
-  import {login} from "../util/api";
+  import {mapMutations} from 'vuex';
+  import {apiUrl, $axios} from '../util/api'
 
   export default {
     name: 'login',
@@ -35,70 +36,44 @@
           password: '',
         },
         show: false,
+        userToken: ''
       }
     },
     methods: {
+      ...mapMutations(['changeLogin']),
       doLogin() {
-        if (this.userInfo.username === '') {
-          alert('用户名不能为空');
+        if (this.userInfo.username === '' || this.userInfo.password === '') {
+          alert('用户名或密码不能为空');
           return false
-        }
-        if (this.userInfo.password === '') {
-          alert('密码名不能为空');
-          return false
-        }
-
-        let res = login(this.userInfo)
-        if (res) {
-          this.$notify({
-            title: '提示信息',
-            message: '登录成功',
-            type: 'success',
-          });
-          this.$router.push({path: '/ActivityBack'})
         } else {
-          this.$notify({
-            title: '提示信息',
-            message: '账号或密码错误',
-            type: 'error'
-          });
-        }
-        /*axios.post('/login', JSON.stringify(this.userInfo))
-          .then(res => {
-            console.log(res)
-            if (res.status == 200) {
-              this.$store.commit('setToken', res.data);
-              localStorage.userName = this.userInfo.userName;
-              localStorage.token_expire = res.data.expire;
-              localStorage.token = res.data.token;
-              this.$notify({
-                title: '提示信息',
-                message: '登录成功',
-                type: 'success'
-              });
-              this.$router.push({path: '/'})
-            } else {
-              this.$notify({
-                title: '提示信息',
-                message: '账号或密码错误',
-                type: 'error'
-              });
-            }
+          $axios({
+            method: 'post',
+            url: apiUrl+'/login',
+            data: this.userInfo
+          }).then(response => {
+            console.log(response.data)
+            let res = response.data
+            this.userToken = res.data.body.token
+            this.changeLogin({Authorization: this.userToken})
+            this.$notify({
+              title: '提示信息',
+              message: '登录成功',
+              type: 'success',
+            });
+            this.$router.push({path: '/ActivityBack'})
+          }).catch(error => {
+            this.$notify({
+              title: '提示信息',
+              message: '账号或密码错误',
+              type: 'error'
+            });
           })
-          .catch(err => {
-            console.log(err)
-          })*/
+        }
       },
       doSign() {
         alert('找相关人员开启权限')
       }
-    },
-    mounted() {
-      var wi = window.screen.width;
-      var hi = window.screen.height;
-      document.getElementById("bg").style.width = wi + "px";
-      document.getElementById("bg").style.height = hi + "px";
-    },
+    }
   }
 </script>
 
