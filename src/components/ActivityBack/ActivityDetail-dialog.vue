@@ -5,18 +5,24 @@
       :visible.sync="dialogDetailVisible"
       width="50%"
       :before-close="handleClose">
-      <p class='statusActivity' >活动未开始</p>
-      <p v-if="formDetailData.status===1">活动进行中</p>
-      <p v-if="formDetailData.status===2">活动开奖中</p>
-      <p v-if="formDetailData.status===3">活动开奖成功</p>
-      <p v-if="formDetailData.status===-1">活动开奖失败</p>
+      <div class='statusActivity'>
+        <p v-if="formDetailData.status===null">活动暂无详情</p>
+        <p v-if="formDetailData.status===0">活动未开始</p>
+        <p v-if="formDetailData.status===1">活动进行中</p>
+        <p v-if="formDetailData.status===2">活动开奖中</p>
+        <p v-if="formDetailData.status===3">活动开奖成功</p>
+        <p v-if="formDetailData.status===-1">活动开奖失败</p>
+      </div>
+
       <el-row :gutter="20">
-        <el-col :span='12' v-if="formDetailData.status!==0">
+        <el-col :span='12' v-if="formDetailData.status!==0&&formDetailData.status!==null">
           <p class="tableInfo">参与用户列表:</p>
           <el-table
             :data="formDetailData.users" border
             style="width: 100%"
-            max-height="300">
+            max-height="300"
+            :row-style="rowStyle"
+          >
             <el-table-column
               prop="id"
               label="用户id"
@@ -33,11 +39,12 @@
             </el-table-column>
           </el-table>
         </el-col>
-        <el-col :span="12" v-if="formDetailData.status>=1||formDetailData.status!==-1">
+        <el-col :span="12" v-if="formDetailData.status!==null&&formDetailData.status>=1">
           <p class="tableInfo">中奖用户列表:</p>
           <el-table
             :data="formDetailData.winners" border
-            style="width: 100%">
+            style="width: 100%"
+          >
             <el-table-column
               prop="id"
               label="用户id"
@@ -54,8 +61,18 @@
               min-width="100">
             </el-table-column>
             <el-table-column
-              prop="getPrice"
+              prop="receive"
               label="奖品领取">
+              <template slot-scope="scope">
+                <el-button
+                  type="text" disabled mini
+                  v-if="scope.row.receive===0">已领奖
+                </el-button>
+                <el-button
+                  type="text" disabled mini
+                  v-if="scope.row.receive===1">未领奖
+                </el-button>
+              </template>
             </el-table-column>
           </el-table>
         </el-col>
@@ -79,8 +96,13 @@
         require: true
       }
     },
+    mounted() {
+
+    },
     data() {
-      return {}
+      return {
+        rowStyle: {height: 65 + 'px'},
+      }
     },
     methods: {
       handleClose() {

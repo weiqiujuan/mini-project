@@ -40,7 +40,7 @@ let router = new Router({
   ]
 })
 
-router.beforeEach((to, from, next) => {
+/*router.beforeEach((to, from, next) => {
   if (to.path === '/LoginBack') {
     next();
   } else {
@@ -52,6 +52,6 @@ router.beforeEach((to, from, next) => {
       next();
     }
   }
-});
+});*/
 
 export default router

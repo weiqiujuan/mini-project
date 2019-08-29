@@ -49,7 +49,7 @@
         <el-form-item label="活动图片">
           <el-upload
             class="upload-demo"
-            action="http://10.238.132.10:8080/pic/upload"
+            action="http://10.234.210.197:8080/pic/upload"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
             :before-remove="beforeRemove"
@@ -64,7 +64,7 @@
         <el-form-item label="活动奖品">
           <el-upload
             class="upload-demo"
-            action="http://10.238.132.10:8080/pic/upload"
+            action="http://10.234.210.197:8080/pic/upload"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
             :before-remove="beforeRemove"

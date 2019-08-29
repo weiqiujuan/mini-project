@@ -1,6 +1,8 @@
 import axios from 'axios';// 引入axios
-export const $axios= axios.create({timeout: 1000 * 12});
-export const apiUrl = 'http://10.238.132.10:8080'
+export const $axios = axios.create({timeout: 1000 * 12});
+export const apiUrl = 'http://10.234.210.197:8080'
+export const imgUrl = 'http://10.234.210.197:7899'
+
 
 //新增活动
 export const createActivity = (params) => {

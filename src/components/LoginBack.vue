@@ -25,7 +25,7 @@
 
 <script>
   import {mapMutations} from 'vuex';
-  import {apiUrl, $axios} from '../util/api'
+  import {apiUrl, $axios} from "../util/api"
 
   export default {
     name: 'login',
@@ -40,13 +40,35 @@
       }
     },
     methods: {
-      ...mapMutations(['changeLogin']),
+      //...mapMutations(['changeLogin']),
       doLogin() {
         if (this.userInfo.username === '' || this.userInfo.password === '') {
           alert('用户名或密码不能为空');
           return false
         } else {
-          $axios({
+          $axios
+            .get(apiUrl + '/login?username=' + this.userInfo.username + '&password=' + this.userInfo.password)
+            .then(response => {
+                console.log(response.data)
+                if (response.data.result === 1) {
+                  this.$notify({
+                    title: '提示信息',
+                    message: '登录成功',
+                    type: 'success',
+                  });
+                  this.$router.push({path: '/ActivityBack'})
+                } else {
+                  this.$notify({
+                    title: '提示信息',
+                    message: response.data.description,
+                    type: 'error'
+                  });
+                }
+              }
+            ).catch(error => {
+            console.log(error)
+          })
+          /*$axios({
             method: 'post',
             url: apiUrl+'/login',
             data: this.userInfo
@@ -67,7 +89,7 @@
               message: '账号或密码错误',
               type: 'error'
             });
-          })
+          })*/
         }
       },
       doSign() {

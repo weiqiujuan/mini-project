@@ -105,13 +105,11 @@
       //用户列表展示
       getUserInfoData() {
         $axios
-          .get(apiUrl + '/users?page=' + this.page + '&size=' + this.size)
+          .get(apiUrl + '/users')
           .then(response => {
               let res = response.data
               if (res.code === '200' && res.data.users !== []) {
                 this.tableData = res.data.users
-                this.page = res.data.page
-                this.size = res.data.size
                 this.total_page = res.data.users.length
               } else {
                 alert(res.data.msg)
@@ -141,19 +139,12 @@
       //按用户名查找
       searchInfo() {
         if (this.username) {
-          let params = {
-            username: this.username,
-            page: 1,
-            size: 100
-          };
           $axios
-            .get(apiUrl + '/user/find', params)
+            .get(apiUrl + '/user/find?username='+this.username)
             .then(response => {
                 let res = response.data
-                if (res.code === '200' && res.data.users !== []) {
+                if (res.code === '200') {
                   this.tableData = res.data.users
-                  this.page = res.data.page
-                  this.size = res.data.size
                   this.total_page = res.data.users.length
                 } else {
                   alert(res.data.msg)

@@ -19,11 +19,10 @@
         min-width="140"
       >
         <template slot-scope="scope">
-          <el-image
+          <img
             style="width: 100px; height: 100px;"
-            :src="scope.row.pic" fit
-          >
-          </el-image>
+            :src="getImgUrl(scope.row.pic)" fit
+          />
         </template>
       </el-table-column>
       <el-table-column
@@ -33,7 +32,7 @@
         <template slot-scope="scope">
           <el-image
             style="width: 100px; height: 100px;"
-            :src="scope.row.pic_small" fit
+            :src="getImgUrl(scope.row.pic_small)" fit
           >
           </el-image>
         </template>
@@ -146,12 +145,23 @@
   import ActivityDetailDialog from './ActivityDetail-dialog'
   import moment from 'moment'//事件处理模块
   import Qs from 'qs'
-  import {apiUrl, $axios} from '../../util/api'
+  import {apiUrl, imgUrl, $axios} from '../../util/api'
 
   export default {
     name: "ActivityTable",
     mounted() {
+      if (this.timer) {
+        clearInterval(this.timer)
+      } else {
+        this.timer = setInterval(() => {
+          //获取数据
+          this.getData()
+        }, 6000)
+      }
       this.getData()
+    },
+    destroyed(){
+      clearInterval(this.timer)
     },
     data() {
       return {
@@ -162,8 +172,7 @@
         dialogDetailVisible: false,
         page: 1,
         size: 5,
-        handleSize: 100,
-        total_page: 100
+        total_page: 15
       }
     },
     components: {
@@ -174,15 +183,15 @@
       //列表展示数据
       getData() {
         $axios
-          .get(apiUrl + '/activities?page=' + this.page + '&size=' + this.size)
+          .get(apiUrl + '/activities')
           .then(response => {
               let res = response.data
               this.tableData = res.data.activities
-              this.page = res.data.page
-              this.size = res.data.size
               this.total_page = res.data.activities.length
             }
-          )
+          ).catch(error => {
+          console.log(error)
+        })
       },
       //向修改子组件传值
       handleModify(row) {
@@ -242,17 +251,22 @@
       handleDetail(row) {
         this.dialogDetailVisible = true;
         $axios
-          .get(apiUrl + '/activity/detail', row.id)
+          .get(apiUrl + '/activity/detail?id=' + row.id)
           .then(response => {
-              if (response === '200') {
-                let res = response.data
+              let res = response.data
+              if (res.code === '200') {
                 this.formDetailData = res.data
-                console.log(this.formDetailData)
               }
             }
-          )
+          ).catch(error => {
+          console.log(error)
+        })
       },
 
+      //图片地址拼接
+      getImgUrl(url) {
+        return imgUrl + url;
+      },
       //分页处理
       handleSizeChange(val) {
         console.log(`每页${val}条`);

@@ -20,7 +20,6 @@
   import NavMenu from '@/components/NavMenu'
   import HeaderBack from '@/components/HeaderBack'
 
-
   export default {
     name: "PlatForm",
     components: {
