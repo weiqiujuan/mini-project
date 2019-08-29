@@ -15,7 +15,7 @@
         min-width="120">
       </el-table-column>
       <el-table-column
-        label="活动展示"
+        label="活动大图"
         min-width="140"
       >
         <template slot-scope="scope">
@@ -26,7 +26,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="活动奖品展示"
+        label="活动小图"
         min-width="140"
       >
         <template slot-scope="scope">
@@ -40,25 +40,25 @@
       <el-table-column
         prop="activity_start"
         label="活动开始时间"
-        min-width="120"
+        min-width="140"
         :formatter="dateFormat">
       </el-table-column>
       <el-table-column
         prop="activity_end"
         label="活动结束时间"
-        min-width="120"
+        min-width="140"
         :formatter="dateFormat">
       </el-table-column>
       <el-table-column
         prop="random_start"
         label="开奖时间"
-        min-width="120"
+        min-width="140"
         :formatter="dateFormat">
       </el-table-column>
       <el-table-column
         prop="random_end"
         label="开奖结束时间"
-        min-width="120"
+        min-width="140"
         :formatter="dateFormat">
       </el-table-column>
       <el-table-column
@@ -127,7 +127,7 @@
     <div class="pagination">
       <el-pagination align='right'
                      @size-change="handleSizeChange"
-                     @current-change="handleCurrentChange" :current-page="page" :page-sizes="[1,5,10]"
+                     @current-change="handleCurrentChange" :current-page="page" :page-sizes="[1,3,5,10]"
                      :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total_page">
       </el-pagination>
     </div>
@@ -171,7 +171,7 @@
         dialogFormVisible: false,
         dialogDetailVisible: false,
         page: 1,
-        size: 5,
+        size: 3,
         total_page: 15
       }
     },
@@ -245,7 +245,7 @@
         if (date === undefined) {
           return "";
         }
-        return moment(date).format("YYYY-MM-DD");
+        return moment(date).format("YYYY-MM-DD HH:mm");
       },
       //活动详情
       handleDetail(row) {

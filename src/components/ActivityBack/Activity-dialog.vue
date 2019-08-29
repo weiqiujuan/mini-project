@@ -44,7 +44,7 @@
         <el-form-item label="活动描述">
           <el-input type="textarea" v-model="form.desc"></el-input>
         </el-form-item>
-        <el-form-item label="活动图片">
+        <el-form-item label="活动大图">
           <el-upload
             class="upload-demo"
             action="http://10.234.210.197:8080/pic/upload"
@@ -57,10 +57,10 @@
             :on-exceed="handleExceed"
             :file-list="fileList">
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
           </el-upload>
         </el-form-item>
-        <el-form-item label="活动奖品">
+        <el-form-item label="活动小图">
           <el-upload
             class="upload-demo"
             action="http://10.234.210.197:8080/pic/upload"
@@ -73,7 +73,7 @@
             :on-exceed="handleExceed"
             :file-list="fileList">
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
           </el-upload>
         </el-form-item>
       </el-form>
